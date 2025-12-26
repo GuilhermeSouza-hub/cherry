@@ -31,7 +31,7 @@ def warning_window():
 def start_pomodoro():
     vanish_btn(btn)
     core(40)
-    pause.pack(side="top")
+    pause.pack(side="bottom")
 
 
 def core(tempo: int, win=window):
