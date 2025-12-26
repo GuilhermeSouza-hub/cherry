@@ -8,14 +8,19 @@ from datetime import timedelta
 window = tk.Tk()
 window.title('Cherry')
 window.geometry("200x90")
-labelmain = tk.Label(window, textvariable='')
-
-count = 1
+frame = tk.Frame(window)
+frame.pack()
+labelmain = tk.Label(frame, textvariable='')
+pause = tk.Button(frame, text="Pause")
 
 
 def vanish_btn(botao):
     btn.config(state="disabled")
     btn.pack_forget()
+
+
+def pause_btn():
+    window.after_cancel()
 
 
 def warning_window():
@@ -30,22 +35,40 @@ def warning_window():
 def start_pomodoro():
     vanish_btn(btn)
     core(40)
+    pause.pack(side="top")
 
 
 def core(tempo: int, win=window):
     win.title(f"Cherry:{tempo}min")
     result = tk.StringVar()
     labelmain.configure(textvariable=result)
-    labelmain.pack(pady=35)
+    labelmain.pack(pady=15)
+
+    toggle = False
+    term = timedelta(seconds=-1)
 
     setting_time = timedelta(minutes=tempo)
-    minus = timedelta(seconds=-1)
+
+    count = 1
+
+    def pause_btn():
+        nonlocal toggle, term
+        toggle = not toggle
+
+        if toggle:
+            term = timedelta(seconds=0)
+            pause.configure(text="Continue")
+        else:
+            term = timedelta(seconds=-1)
+            pause.configure(text="Pause")
 
     def timer():
+        pause.configure(command=pause_btn)
         id_t = win.after(1000, timer)
+
         nonlocal setting_time
         if setting_time != timedelta(minutes=0):
-            setting_time = setting_time + minus
+            setting_time = setting_time + term
             result.set(setting_time)
         else:
             result.set("0:00:00")
@@ -53,7 +76,7 @@ def core(tempo: int, win=window):
             win.after_cancel(id_t)
 
             warning_window()
-            global count
+            nonlocal count
             match tempo:
                 case 40:
                     if count < 4:
@@ -68,7 +91,7 @@ def core(tempo: int, win=window):
     timer()
 
 
-btn = tk.Button(window, text="Start", command=start_pomodoro)
-btn.pack(pady=35)
+btn = tk.Button(frame, text="Start", command=start_pomodoro)
+btn.pack(pady=30)
 
 window.mainloop()
