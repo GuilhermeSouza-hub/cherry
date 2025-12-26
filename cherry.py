@@ -1,4 +1,4 @@
-# Lil' Pomodoro:Cherry v1.0.1
+# Lil' Pomodoro:Cherry v1.2.1
 # time todo: 40 min. for 4 times
 # small pause: 5 min, for 3 times
 # pause: 15 min
@@ -17,10 +17,6 @@ pause = tk.Button(frame, text="Pause")
 def vanish_btn(botao):
     btn.config(state="disabled")
     btn.pack_forget()
-
-
-def pause_btn():
-    window.after_cancel()
 
 
 def warning_window():
